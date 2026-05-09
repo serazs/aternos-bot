@@ -55,4 +55,4 @@ function createBot() {
     bot.on('error', (err) => {
         console.log('Hata:', err);
     });
-}
+} // tetikleme denemesi
