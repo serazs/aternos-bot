@@ -24,7 +24,7 @@ function createBot() {
     const bot = mineflayer.createBot({
         host: 'suriboom.aternos.me', 
         port: 21431,                  
-        username: 'DJ_Semazen',       
+        username: '.DJ_Semazen',       
         
     });
 
