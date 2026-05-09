@@ -25,7 +25,7 @@ function createBot() {
         host: 'suriboom.aternos.me', 
         port: 21431,                  
         username: '.DJ_Semazen',       
-        version: '1.21.1'
+        version: '1.21'
     });
 
     let musicInterval;
