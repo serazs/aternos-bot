@@ -1,19 +1,40 @@
-// Minecraft Bot Yapılandırması (Aternos Bilgilerine Göre Güncellendi)
+const mineflayer = require('mineflayer');
+const express = require('express');
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Render'ın açık kalması için web sunucusu (Sürekli aktif kalacak)
+app.get('/', (req, res) => {
+    res.send('DJ Bot Arka Planda Calisiyor!');
+});
+
+app.listen(PORT, () => {
+    console.log(`Web sunucu ${PORT} portunda baslatildi.`);
+});
+
+// ÇÖKMEYİ ENGELLEYEN ALTIN DOKUNUŞ:
+// Ne hata olursa olsun bu kod Render'ın kapanmasını engeller!
+process.on('uncaughtException', (err) => {
+    console.log('Sistem hatayı yakaladı ve çökme engellendi:', err.message);
+});
+
 function createBot() {
+    console.log('Aternos sunucusuna baglanmaya calisiliyor...');
+
     const bot = mineflayer.createBot({
-        host: 'suriboom.aternos.me', // Senin Aternos IP'n
-        port: 21431,                  // Senin Aternos Portun
-        username: 'DJ_Semazen',       // Botun adı
-        version: '1.21.1'             // Senin sunucu sürümün
+        host: 'suriboom.aternos.me', 
+        port: 21431,                  
+        username: 'DJ_Semazen',       
+        version: '1.21.11' // Sürüm birebir Aternos'taki gibi yapıldı!
     });
 
     let musicInterval;
     let moveInterval;
 
     bot.on('spawn', () => {
-        console.log('DJ Bot başarıyla sahneye çıktı!');
+        console.log('DJ Bot basariyla sunucuya giris yapti! Sahne onun!');
 
-        // 1. HAREKET: Kendi etrafında yuvarlak çizerek dönme ve yürüme
+        // 1. HAREKET: Yuvarlak çizerek dönme
         let angle = 0;
         moveInterval = setInterval(() => {
             if (bot.entity) {
@@ -28,7 +49,7 @@ function createBot() {
             }
         }, 100);
 
-        // 2. MÜZİK: Nota sesleri çalma ritmi
+        // 2. MÜZİK: Nota sesleri çalma
         musicInterval = setInterval(() => {
             if (bot.entity) {
                 const pitches = [0.5, 0.7, 0.9, 1.0, 1.2, 1.4, 1.6];
@@ -38,21 +59,18 @@ function createBot() {
         }, 400); 
     });
 
-    bot.on('chat', (username, message) => {
-        if (username === bot.username) return;
-        if (message.toLowerCase() === 'naber') {
-            bot.chat(`Naber kanka! Ben DJ Semazen, pistlerin tozunu yutturmaya geldim! 😎🎵`);
-        }
-    });
-
+    // Bağlantı koparsa veya sunucu kapalıysa tetiklenir, çökmeden 15 saniye sonra tekrar dener
     bot.on('end', () => {
-        console.log('Bağlantı koptu, tekrar bağlanılıyor...');
+        console.log('Baglanti koptu. 15 saniye sonra tekrar baglanilacak...');
         clearInterval(musicInterval);
         clearInterval(moveInterval);
-        setTimeout(createBot, 10000);
+        setTimeout(createBot, 15000);
     });
 
     bot.on('error', (err) => {
-        console.log('Hata:', err);
+        console.log('Bağlantı hatası alındı (Sunucu kapalı olabilir):', err.message);
     });
-} // tetikleme denemesi
+}
+
+// Botu başlat
+createBot();
